@@ -1,18 +1,15 @@
 //
-//  PaRomajiKanaConverterTest.h
-//
-//  Created by Yusuke Kawakami on 2013/02/28.
-//  Copyright (c) 2013年 Yusuke Kawakami. All rights reserved.
+//  MDRomajiKanaConverterTest.h
 //
 
-#import "PaRomajiKanaConverterTest.h"
-#import "PaRomajiKanaConverter.h"
+#import "MDRomajiKanaConverterTest.h"
+#import "MDRomajiKanaConverter.h"
 
-@implementation PaRomajiKanaConverterTest
+@implementation MDRomajiKanaConverterTest
 
 + (void)test
 {
-    PaRomajiKanaConverter* converter = [PaRomajiKanaConverter new];
+    MDRomajiKanaConverter* converter = [MDRomajiKanaConverter new];
 
     NSArray *testRomajiList =
         @[@"mohayonao",

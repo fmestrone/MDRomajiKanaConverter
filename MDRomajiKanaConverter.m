@@ -1,16 +1,13 @@
 //
-//  PaRomajiKanaConverter.h
+//  MDRomajiKanaConverter.h
 //
-//  Created by Yusuke Kawakami on 2013/02/27.
-//  Copyright (c) 2013年 Yusuke Kawakami. All rights reserved.
-//
-//  This code is a objective-c version of
+//  This code is an Objective-C version of
 //  (http://d.hatena.ne.jp/mohayonao/20091129/1259505966) written by mohayonao.
 //
 
-#import "PaRomajiKanaConverter.h"
+#import "MDRomajiKanaConverter.h"
 
-@implementation PaRomajiKanaConverter {
+@implementation MDRomajiKanaConverter {
     NSDictionary *_kataToHiraMap;
     NSDictionary *_hiraToKataMap;
 
@@ -271,17 +268,17 @@
 
 }
 
-- (NSString* )convertToHiraganaFromKatakana:(NSString *)katakana
+- (NSString *)convertFromKatakanaToHiragana:(NSString *)katakana
 {
     return [self replaceString:katakana withRegex:_reKata replaceMap:_kataToHiraMap];
 }
 
-- (NSString* )convertToKatakanaFromHiragana:(NSString *)hiragana
+- (NSString *)convertFromHiraganaToKatakana:(NSString *)hiragana
 {
     return [self replaceString:hiragana withRegex:_reHira replaceMap:_hiraToKataMap];
 }
 
-- (NSString* )convertToKatakanaFromRomaji:(NSString *)romaji
+- (NSString *)convertFromRomajiToKatakana:(NSString *)romaji
 {
     romaji = [romaji lowercaseString];
     NSMutableString *convertedStr = [NSMutableString stringWithString:romaji];
@@ -292,15 +289,15 @@
     return [self replaceString:convertedStr withRegex:_reRomajiToKana replaceMap:_romajiToKanaMap];
 }
 
-- (NSString* )convertToHiraganaFromRomaji:(NSString *)romaji
+- (NSString *)convertFromRomajiToHiragana:(NSString *)romaji
 {
-    NSString *katakana = [self convertToKatakanaFromRomaji:romaji];
-    return [self convertToHiraganaFromKatakana:katakana];
+    NSString *katakana = [self convertFromRomajiToKatakana:romaji];
+    return [self convertFromKatakanaToHiragana:katakana];
 }
 
-- (NSString* )convertToRomajiFromKana:(NSString *)kana
+- (NSString *)convertFromKanaToRomaji:(NSString *)kana
 {
-    NSString *katakana = [self convertToKatakanaFromHiragana:kana];
+    NSString *katakana = [self convertFromHiraganaToKatakana:kana];
     NSMutableString *romaji = [self replaceString:katakana withRegex:_reKanaToRomaji replaceMap:_kanaToRomajiMap];
     [self replaceString:romaji withRegex:_reKanaXtu template:@"$1$1"]; //小さい "ッ" は直後の文字を２回に変換
     [self replaceString:romaji withRegex:_reKanaLtu template:@""];     //最後の小さい "ッ" は消去 //"ー"は直前の文字を２回に変換
