@@ -11,6 +11,7 @@
     NSDictionary *_kataToHiraMap;
     NSDictionary *_hiraToKataMap;
 
+    NSDictionary *_strictRomajiToKanaMap;
     NSDictionary *_romajiToKanaMap;
     NSDictionary *_kanaToRomajiMap;
     
@@ -71,7 +72,7 @@
     }
     _hiraToKataMap = dict;
 
-    NSDictionary *master = @{
+    _strictRomajiToKanaMap = @{
         @"a"  :@"ア", @"i"  :@"イ", @"u"  :@"ウ", @"e"  :@"エ", @"o"  :@"オ",
         @"ka" :@"カ", @"ki" :@"キ", @"ku" :@"ク", @"ke" :@"ケ", @"ko" :@"コ",
         @"sa" :@"サ", @"shi":@"シ", @"su" :@"ス", @"se" :@"セ", @"so" :@"ソ",
@@ -147,14 +148,14 @@
 
     NSDictionary *kanaAssist = @{ @"a":@"ァ", @"i":@"ィ", @"u":@"ゥ", @"e":@"ェ", @"o":@"ォ" };
     
-    NSMutableDictionary *romajiToKanaMap = [NSMutableDictionary dictionaryWithDictionary:master];
+    NSMutableDictionary *romajiToKanaMap = [NSMutableDictionary dictionaryWithDictionary:_strictRomajiToKanaMap];
     [romajiToKanaMap addEntriesFromDictionary:romajiAssist];
     _romajiToKanaMap = romajiToKanaMap;
     
 
     NSMutableDictionary *kanaToRomajiMap = [NSMutableDictionary dictionary];
-    for (NSString *key in [master allKeys]) {
-        [kanaToRomajiMap setObject:key forKey:[master objectForKey:key]];
+    for (NSString *key in [_strictRomajiToKanaMap allKeys]) {
+        [kanaToRomajiMap setObject:key forKey:[_strictRomajiToKanaMap objectForKey:key]];
     }
     for (NSString *key in [kanaAssist allKeys]) {
         [kanaToRomajiMap setObject:key forKey:[kanaAssist objectForKey:key]];
@@ -280,18 +281,33 @@
 
 - (NSString *)convertFromRomajiToKatakana:(NSString *)romaji
 {
+    return [self convertFromRomajiToKatakana:romaji strict:NO];
+}
+
+- (NSString *)convertFromRomajiToKatakana:(NSString *)romaji strict:(BOOL)strict
+{
     romaji = [romaji lowercaseString];
     NSMutableString *convertedStr = [NSMutableString stringWithString:romaji];
     [self replaceString:convertedStr withRegex:_reRomajiNn template:@"n$1"];     //nnの後に母音またはyが続かない場合は 1 個の n に変換
     [self replaceString:convertedStr withRegex:_reRomajiMba template:@"ン$1$2"]; //m の後ろにバ行、パ行のときは "ン" と変換
     [self replaceString:convertedStr withRegex:_reRomajiXtu template:@"ッ$1"];   //子音が続く時は "ッ" と変換
     //[self replaceString:convertedStr withRegex:_reRomajiA__ template:@"$1ー"];   //母音が続く時は "ー" と変換
-    return [self replaceString:convertedStr withRegex:_reRomajiToKana replaceMap:_romajiToKanaMap];
+    if ( strict ) {
+        return [self replaceString:convertedStr withRegex:_reRomajiToKana replaceMap:_strictRomajiToKanaMap];
+    } else {
+        return [self replaceString:convertedStr withRegex:_reRomajiToKana replaceMap:_romajiToKanaMap];
+    }
 }
 
 - (NSString *)convertFromRomajiToHiragana:(NSString *)romaji
 {
     NSString *katakana = [self convertFromRomajiToKatakana:romaji];
+    return [self convertFromKatakanaToHiragana:katakana];
+}
+
+- (NSString *)convertFromRomajiToHiragana:(NSString *)romaji strict:(BOOL)strict
+{
+    NSString *katakana = [self convertFromRomajiToKatakana:romaji strict:strict];
     return [self convertFromKatakanaToHiragana:katakana];
 }
 
@@ -367,5 +383,33 @@
     [array sortUsingDescriptors:@[sortDescriptor]];
 }
 
+- (BOOL)isKatakana:(unichar)c
+{
+    /*
+     * Unicode for Katakana 0x30a0-0x30ff, but we exclude some uncommon characters
+     */
+    return c >= 0x30a1 && c <= 0x30f6;
+}
+
+- (BOOL)isHiragana:(unichar)c
+{
+    /*
+     * Unicode for Hiragana 0x3040-0x309f, but we exclude some uncommon characters and some unassigned values
+     */
+    return c >= 0x3041 && c <= 0x3096;
+}
+
+- (BOOL)isKana:(unichar)c
+{
+    return [self isKatakana:c] || [self isHiragana:c];
+}
+
+- (BOOL)isKanji:(unichar)c
+{
+    /*
+     * Unicode for unified CJK ideographs 0x4e00-0x9faf
+     */
+    return c >= 0x4e00 && c <= 0x9faf;
+}
 
 @end

@@ -25,6 +25,8 @@ typedef enum {
 
 + (MDRomajiKanaConverter *)japaneseConverter;
 
+- (NSString *)stringByConvertingRomajiToHiraganaStrictly;
+- (NSString *)stringByConvertingRomajiToKatakanaStrictly;
 - (NSString *)stringByConvertingRomajiToHiragana;
 - (NSString *)stringByConvertingRomajiToKatakana;
 - (NSString *)stringByConvertingKanaToRomaji;
@@ -37,6 +39,8 @@ typedef enum {
 
 @interface NSMutableString (RomajiKanaConversion)
 
+- (void)convertRomajiToHiraganaStrictly;
+- (void)convertRomajiToKatakanaStrictly;
 - (void)convertRomajiToHiragana;
 - (void)convertRomajiToKatakana;
 - (void)convertKanaToRomaji;

@@ -20,6 +20,16 @@
     return converter;
 }
 
+- (NSString *)stringByConvertingRomajiToHiraganaStrictly
+{
+    return [[NSString japaneseConverter] convertFromRomajiToHiragana:self strict:YES];
+}
+
+- (NSString *)stringByConvertingRomajiToKatakanaStrictly
+{
+    return [[NSString japaneseConverter] convertFromRomajiToKatakana:self strict:YES];
+}
+
 - (NSString *)stringByConvertingRomajiToHiragana
 {
     return [[NSString japaneseConverter] convertFromRomajiToHiragana:self];
@@ -83,7 +93,7 @@
 
 - (BOOL)isRomaji
 {
-    NSString *katakana = [self stringByConvertingRomajiToKatakana];
+    NSString *katakana = [self stringByConvertingRomajiToKatakanaStrictly];
     return [katakana japaneseScriptType] == MDJapaneseScriptKatakana;
 }
 
@@ -91,23 +101,38 @@
 
 @implementation NSMutableString (RomajiKanaConversion)
 
-- (void)convertRomajiToHiragana {
+- (void)convertRomajiToHiraganaStrictly
+{
+    [self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[self stringByConvertingRomajiToHiraganaStrictly]];
+}
+
+- (void)convertRomajiToKatakanaStrictly
+{
+    [self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[self stringByConvertingRomajiToKatakanaStrictly]];
+}
+
+- (void)convertRomajiToHiragana
+{
     [self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[self stringByConvertingRomajiToHiragana]];
 }
 
-- (void)convertRomajiToKatakana {
+- (void)convertRomajiToKatakana
+{
     [self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[self stringByConvertingRomajiToKatakana]];
 }
 
-- (void)convertKanaToRomaji {
+- (void)convertKanaToRomaji
+{
     [self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[self stringByConvertingKanaToRomaji]];
 }
 
-- (void)convertHiraganaToKatakana {
+- (void)convertHiraganaToKatakana
+{
     [self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[self stringByConvertingHiraganaToKatakana]];
 }
 
-- (void)convertKatakanaToHiragana {
+- (void)convertKatakanaToHiragana
+{
     [self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[self stringByConvertingKatakanaToHiragana]];
 }
 
