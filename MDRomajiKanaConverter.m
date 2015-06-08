@@ -62,7 +62,7 @@
 
         @"ァ":@"ぁ", @"ィ":@"ぃ", @"ゥ":@"ぅ", @"ェ":@"ぇ", @"ォ":@"ぉ",
         @"ャ":@"ゃ", @"ュ":@"ゅ", @"ョ":@"ょ",
-        @"ヴ":@"ゔ", @"ッ":@"っ", @"ヰ":@"ゐ", @"ヱ":@"ゑ",
+        @"ヴ":@"ゔ", @"ッ":@"っ", @"ヰ":@"ゐ", @"ヱ":@"ゑ"
     };
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -75,7 +75,7 @@
         @"a"  :@"ア", @"i"  :@"イ", @"u"  :@"ウ", @"e"  :@"エ", @"o"  :@"オ",
         @"ka" :@"カ", @"ki" :@"キ", @"ku" :@"ク", @"ke" :@"ケ", @"ko" :@"コ",
         @"sa" :@"サ", @"shi":@"シ", @"su" :@"ス", @"se" :@"セ", @"so" :@"ソ",
-        @"ta" :@"タ", @"chi":@"チ", @"tu" :@"ツ", @"te" :@"テ", @"to" :@"ト",
+        @"ta" :@"タ", @"chi":@"チ", @"tsu" :@"ツ", @"te" :@"テ", @"to" :@"ト",
         @"na" :@"ナ", @"ni" :@"ニ", @"nu" :@"ヌ", @"ne" :@"ネ", @"no" :@"ノ",
         @"ha" :@"ハ", @"hi" :@"ヒ", @"fu" :@"フ", @"he" :@"ヘ", @"ho" :@"ホ",
         @"ma" :@"マ", @"mi" :@"ミ", @"mu" :@"ム", @"me" :@"メ", @"mo" :@"モ",
@@ -305,6 +305,35 @@
     [self replaceString:romaji withRegex:_reKanaN template:@"m$1$2"];  //n の後ろが バ行、パ行 なら m に修正
     [self replaceString:romaji withRegex:_reKanaOo template:@"$1"];    //oosaka → osaka
     return romaji;
+}
+
+- (BOOL)isKatakana:(unichar)c
+{
+    /*
+     * Unicode for Katakana 0x30a0-0x30ff, but we exclude some uncommon characters
+     */
+    return c >= 0x30a1 && c <= 0x30f6;
+}
+
+- (BOOL)isHiragana:(unichar)c
+{
+    /*
+     * Unicode for Hiragana 0x3040-0x309f, but we exclude some uncommon characters and some unassigned values
+     */
+    return c >= 0x3041 && c <= 0x3096;
+}
+
+- (BOOL)isKana:(unichar)c
+{
+    return [self isKatakana:c] || [self isHiragana:c];
+}
+
+- (BOOL)isKanji:(unichar)c
+{
+    /*
+     * Unicode for unified CJK ideographs 0x4e00-0x9faf
+     */
+    return c >= 0x4e00 && c <= 0x9faf;
 }
 
 - (void)replaceString:(NSMutableString *)str withRegex:(NSRegularExpression *)regex template:(NSString *)template

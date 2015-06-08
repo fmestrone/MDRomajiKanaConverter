@@ -87,24 +87,24 @@
 
 
     for (NSString *romaji in testRomajiList) {
-        NSLog(@"[romaji to hiragana] %@ -> %@", romaji, [converter convertToHiraganaFromRomaji:romaji]);
+        NSLog(@"[romaji to hiragana] %@ -> %@", romaji, [converter convertFromRomajiToHiragana:romaji]);
     }
     for (NSString *romaji in testRomajiList) {
-        NSLog(@"[romaji to katakana] %@ -> %@", romaji, [converter convertToKatakanaFromRomaji:romaji]);
+        NSLog(@"[romaji to katakana] %@ -> %@", romaji, [converter convertFromRomajiToKatakana:romaji]);
     }
 
     for (NSString *hiragana in testHiraganaList) {
-        NSLog(@"[hiragana to romaji] %@ -> %@", hiragana, [converter convertToRomajiFromKana:hiragana]);
+        NSLog(@"[hiragana to romaji] %@ -> %@", hiragana, [converter convertFromKanaToRomaji:hiragana]);
     }
     for (NSString *hiragana in testHiraganaList) {
-        NSLog(@"[hiragana to katakana] %@ -> %@", hiragana, [converter convertToKatakanaFromHiragana:hiragana]);
+        NSLog(@"[hiragana to katakana] %@ -> %@", hiragana, [converter convertFromHiraganaToKatakana:hiragana]);
     }
 
     for (NSString *katakana in testKatakanaList) {
-        NSLog(@"[katakana to romaji] %@ -> %@", katakana, [converter convertToRomajiFromKana:katakana]);
+        NSLog(@"[katakana to romaji] %@ -> %@", katakana, [converter convertFromKanaToRomaji:katakana]);
     }
     for (NSString *katakana in testKatakanaList) {
-        NSLog(@"[katakana to katakana] %@ -> %@", katakana, [converter convertToHiraganaFromKatakana:katakana]);
+        NSLog(@"[katakana to katakana] %@ -> %@", katakana, [converter convertFromKatakanaToHiragana:katakana]);
     }
 }
 

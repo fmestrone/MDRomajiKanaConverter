@@ -17,5 +17,9 @@
 - (NSString *)convertFromRomajiToKatakana:(NSString *)romaji;
 - (NSString *)convertFromRomajiToHiragana:(NSString *)romaji;
 - (NSString *)convertFromKanaToRomaji:(NSString *)kana;
+- (BOOL)isKatakana:(unichar)c;
+- (BOOL)isHiragana:(unichar)c;
+- (BOOL)isKana:(unichar)c;
+- (BOOL)isKanji:(unichar)c;
 
 @end
